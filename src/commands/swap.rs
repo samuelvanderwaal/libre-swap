@@ -1,13 +1,14 @@
 use super::*;
 
-pub struct FirstArgs {
+pub struct SwapArgs {
     pub keypair_path: Option<PathBuf>,
     pub rpc_url: Option<String>,
     pub value: String,
 }
 
-pub fn handle_first(args: FirstArgs) -> Result<()> {
+pub fn handle_swap(args: SwapArgs) -> Result<()> {
     let _config = CliConfig::new(args.keypair_path, args.rpc_url)?;
 
     Ok(())
 }
+

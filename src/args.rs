@@ -19,7 +19,12 @@ pub struct Args {
 
 #[derive(Clone, Subcommand)]
 pub enum Commands {
-    First {
+    CreateSwap {
+        nft_mint: String,
+        fungible_mint: String,
+        amount: u64,
+    },
+    Swap {
         #[clap(short, long)]
         value: String,
     },

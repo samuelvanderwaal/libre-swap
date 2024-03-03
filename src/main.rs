@@ -1,9 +1,9 @@
 use anyhow::Result;
 use clap::Parser;
 
-use solana_cli_template::{
+use swap::{
     args::{Args, Commands},
-    commands::{handle_first, FirstArgs},
+    commands::{handle_create_swap, handle_swap, CreateSwapArgs, SwapArgs},
 };
 
 fn main() -> Result<()> {
@@ -15,7 +15,18 @@ fn main() -> Result<()> {
     let rpc_url = args.rpc_url.clone();
 
     match args.command {
-        Commands::First { value } => handle_first(FirstArgs {
+        Commands::CreateSwap {
+            nft_mint,
+            fungible_mint,
+            amount,
+        } => handle_create_swap(CreateSwapArgs {
+            keypair_path,
+            rpc_url,
+            nft_mint,
+            fungible_mint,
+            amount,
+        }),
+        Commands::Swap { value } => handle_swap(SwapArgs {
             keypair_path,
             rpc_url,
             value,
