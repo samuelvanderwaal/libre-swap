@@ -1,19 +1,10 @@
-use std::str::FromStr;
-
-use solana_sdk::{
-    instruction::{AccountMeta, Instruction},
-    signer::Signer,
-    transaction::Transaction,
-};
-use spl_associated_token_account::get_associated_token_address;
-
 use super::*;
 
 pub struct CreateSwapArgs {
     pub keypair_path: Option<PathBuf>,
     pub rpc_url: Option<String>,
-    pub nft_mint: String,
-    pub fungible_mint: String,
+    pub nft_mint: Pubkey,
+    pub fungible_mint: Pubkey,
     pub amount: u64,
 }
 
@@ -21,16 +12,12 @@ pub fn handle_create_swap(args: CreateSwapArgs) -> Result<()> {
     let config = CliConfig::new(args.keypair_path, args.rpc_url)?;
 
     let authority = config.keypair.pubkey();
-    let nft_mint = Pubkey::from_str(&args.nft_mint)?;
-    let fungible_mint = Pubkey::from_str(&args.fungible_mint)?;
 
-    let accounts = derive_create_swap_accounts(authority, nft_mint, fungible_mint);
+    let accounts = derive_create_swap_accounts(authority, args.nft_mint, args.fungible_mint);
     let mut data = vec![];
     data.extend_from_slice(&CREATE_SWAP_DISC);
-    data.extend(1u64.to_le_bytes().to_vec());
     data.extend(args.amount.to_le_bytes().to_vec());
-
-    println!("data: {:?}", data);
+    data.extend(1u64.to_le_bytes().to_vec());
 
     let instruction = Instruction::new_with_bytes(MONOSWAP_PROGRAM_ID, &data, accounts);
     let transaction = Transaction::new_signed_with_payer(
@@ -91,6 +78,6 @@ fn derive_create_swap_accounts(
         AccountMeta::new_readonly(authority, true),
         AccountMeta::new_readonly(spl_token::id(), false),
         AccountMeta::new_readonly(spl_associated_token_account::id(), false),
-        AccountMeta::new_readonly(solana_sdk::system_program::id(), false),
+        AccountMeta::new_readonly(system_program::id(), false),
     ]
 }

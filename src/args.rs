@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
+use solana_sdk::pubkey::Pubkey;
 
 #[derive(Parser)]
 #[clap(author, version, about)]
@@ -19,13 +20,17 @@ pub struct Args {
 
 #[derive(Clone, Subcommand)]
 pub enum Commands {
+    DecodeSwap {
+        incoming_mint: Pubkey,
+        outgoing_mint: Pubkey,
+    },
     CreateSwap {
-        nft_mint: String,
-        fungible_mint: String,
+        nft_mint: Pubkey,
+        fungible_mint: Pubkey,
         amount: u64,
     },
     Swap {
-        #[clap(short, long)]
-        value: String,
+        nft_mint: Pubkey,
+        fungible_mint: Pubkey,
     },
 }
