@@ -32,7 +32,11 @@ pub enum Commands {
         fungible_mint: Pubkey,
         amount: u64,
     },
-    Swap {
+    In {
+        nft_mint: Pubkey,
+        fungible_mint: Pubkey,
+    },
+    Out {
         nft_mint: Pubkey,
         fungible_mint: Pubkey,
     },

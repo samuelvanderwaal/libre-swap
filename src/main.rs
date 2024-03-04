@@ -40,7 +40,7 @@ fn main() -> Result<()> {
             fungible_mint,
             amount,
         }),
-        Commands::Swap {
+        Commands::In {
             nft_mint,
             fungible_mint,
         } => handle_swap(SwapArgs {
@@ -48,6 +48,17 @@ fn main() -> Result<()> {
             rpc_url,
             nft_mint,
             fungible_mint,
+            direction: Direction::In,
+        }),
+        Commands::Out {
+            nft_mint,
+            fungible_mint,
+        } => handle_swap(SwapArgs {
+            keypair_path,
+            rpc_url,
+            nft_mint,
+            fungible_mint,
+            direction: Direction::Out,
         }),
     }
 }
