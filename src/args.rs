@@ -20,9 +20,12 @@ pub struct Args {
 
 #[derive(Clone, Subcommand)]
 pub enum Commands {
-    DecodeSwap {
+    Decode {
         incoming_mint: Pubkey,
         outgoing_mint: Pubkey,
+    },
+    DecodeSwap {
+        swap: Pubkey,
     },
     CreateSwap {
         nft_mint: Pubkey,

@@ -3,10 +3,7 @@ use clap::Parser;
 
 use swap::{
     args::{Args, Commands},
-    commands::{
-        handle_create_swap, handle_decode_swap, handle_swap, CreateSwapArgs, DecodeSwapArgs,
-        SwapArgs,
-    },
+    commands::*,
 };
 
 fn main() -> Result<()> {
@@ -18,14 +15,19 @@ fn main() -> Result<()> {
     let rpc_url = args.rpc_url.clone();
 
     match args.command {
-        Commands::DecodeSwap {
+        Commands::Decode {
             incoming_mint,
             outgoing_mint,
-        } => handle_decode_swap(DecodeSwapArgs {
+        } => handle_decode(DecodeArgs {
             keypair_path,
             rpc_url,
             incoming_mint,
             outgoing_mint,
+        }),
+        Commands::DecodeSwap { swap } => handle_decode_swap(DecodeSwapArgs {
+            keypair_path,
+            rpc_url,
+            swap,
         }),
         Commands::CreateSwap {
             nft_mint,

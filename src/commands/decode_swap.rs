@@ -1,13 +1,19 @@
 use super::*;
 
-pub struct DecodeSwapArgs {
+pub struct DecodeArgs {
     pub keypair_path: Option<PathBuf>,
     pub rpc_url: Option<String>,
     pub incoming_mint: Pubkey,
     pub outgoing_mint: Pubkey,
 }
 
-pub fn handle_decode_swap(args: DecodeSwapArgs) -> Result<()> {
+pub struct DecodeSwapArgs {
+    pub keypair_path: Option<PathBuf>,
+    pub rpc_url: Option<String>,
+    pub swap: Pubkey,
+}
+
+pub fn handle_decode(args: DecodeArgs) -> Result<()> {
     let config = CliConfig::new(args.keypair_path, args.rpc_url)?;
 
     let swap_marker = Pubkey::find_program_address(
@@ -22,6 +28,16 @@ pub fn handle_decode_swap(args: DecodeSwapArgs) -> Result<()> {
     .0;
 
     let data = config.client.get_account_data(&swap_marker)?;
+    let swap_marker = SwapMarker::deserialize(&mut &data[8..])?;
+
+    println!("Swap Marker: {:#?}", swap_marker);
+    Ok(())
+}
+
+pub fn handle_decode_swap(args: DecodeSwapArgs) -> Result<()> {
+    let config = CliConfig::new(args.keypair_path, args.rpc_url)?;
+
+    let data = config.client.get_account_data(&args.swap)?;
     let swap_marker = SwapMarker::deserialize(&mut &data[8..])?;
 
     println!("Swap Marker: {:#?}", swap_marker);

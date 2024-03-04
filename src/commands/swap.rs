@@ -1,3 +1,6 @@
+use solana_client::rpc_config::RpcSendTransactionConfig;
+use solana_sdk::commitment_config::CommitmentConfig;
+
 use super::*;
 
 pub struct SwapArgs {
@@ -24,7 +27,18 @@ pub fn handle_swap(args: SwapArgs) -> Result<()> {
         config.recent_blockhash,
     );
 
-    let sig = config.client.send_and_confirm_transaction(&transaction)?;
+    let rpc_config = RpcSendTransactionConfig {
+        skip_preflight: true,
+        ..Default::default()
+    };
+
+    let sig = config
+        .client
+        .send_and_confirm_transaction_with_spinner_and_config(
+            &transaction,
+            CommitmentConfig::confirmed(),
+            rpc_config,
+        )?;
 
     println!("Signature: {:?}", sig);
     Ok(())
@@ -69,7 +83,7 @@ fn derive_swap_accounts(
         &MONOSWAP_PROGRAM_ID,
     )
     .0;
-    let escrow_nft_token_account = get_associated_token_address(&escrow_owner, &nft_mint);
+    let escrow_nft_token_account = get_associated_token_address(&escrow_owner_reverse, &nft_mint);
     let fungible_token_account_source = get_associated_token_address(&escrow_owner, &fungible_mint);
     let fungible_token_account_destination =
         get_associated_token_address(&authority, &fungible_mint);
